@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import MlbGame from "../types/MlbGame"
 import teamAbbreviations from "../utils/teamAbbreviations"
 
@@ -11,27 +12,37 @@ const ScheduleRow = ({ teamName, games }: ScheduleRowProps) => {
         <tr>
             <td>{teamAbbreviations.get(teamName)}</td>
             {
-                games.map((game) => {
+                games.map((game, index) => {
                     if (game === null) {
-                        return <td></td>;
+                        return <td key={index}></td>;
                     }
 
                     const isHome = game.teams.home.team.name === teamName;
                     const team = isHome ? game.teams.home : game.teams.away;
                     const opponent = isHome ? game.teams.away.team.name : game.teams.home.team.name;
 
-                    const content = [<div>{`${isHome ? '' : '@'}${teamAbbreviations.get(opponent)}`}</div>];
+                    const content = [
+                        <div key={`${game.gameDate}-opponent`}>{`${isHome ? '' : '@'}${teamAbbreviations.get(opponent)}`}</div>
+                    ];
 
                     if (team.probablePitcher) {
-                        content.push(<div>{team.probablePitcher.fullName}</div>);
+                        content.push(<div key={`${game.gameDate}-pitcher`}>{team.probablePitcher.fullName.split(' ').at(-1)}</div>);
                     }
 
                     if (game.odds) {
                         const odds = game.odds[0].name === teamName ? game.odds[0].price : game.odds[1].price;
-                        content.push(<div>{odds}</div>);
+
+                        content.push(
+                            <div
+                                className={classNames('odds', { 'favored': parseInt(odds) < 0 })}
+                                key={`${game.gameDate}-odds`
+                            }>
+                                {odds}
+                            </div>
+                        );
                     }
                     
-                    return <td>{content}</td>;
+                    return <td key={`${game.gameDate}`}>{content}</td>;
                 })
             }
         </tr>
