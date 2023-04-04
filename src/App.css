@@ -23,3 +23,7 @@ tr:nth-child(even) {
 .odds.favored {
   color: green;
 }
+
+.schedule-today {
+  font-weight: bold;
+}

@@ -4,10 +4,11 @@ import teamAbbreviations from "../utils/teamAbbreviations"
 
 interface ScheduleRowProps {
     teamName: string,
-    games: (MlbGame | null)[]
+    games: (MlbGame | null)[],
+    todayIndex: number | null,
 }
 
-const ScheduleRow = ({ teamName, games }: ScheduleRowProps) => {
+const ScheduleRow = ({ teamName, games, todayIndex }: ScheduleRowProps) => {
     return (
         <tr>
             <td>{teamAbbreviations.get(teamName)}</td>
@@ -42,7 +43,14 @@ const ScheduleRow = ({ teamName, games }: ScheduleRowProps) => {
                         );
                     }
                     
-                    return <td key={`${game.gameDate}`}>{content}</td>;
+                    return (
+                        <td
+                            key={`${game.gameDate}`}
+                            className={classNames({ 'schedule-today': index === todayIndex })}
+                        >
+                            {content}
+                        </td>
+                    );
                 })
             }
         </tr>

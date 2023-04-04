@@ -1,5 +1,6 @@
 import { useState, useEffect, ReactElement } from 'react';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 import MlbDay from '../types/MlbDay';
 import MlbGame from '../types/MlbGame';
 import ScheduleRow from './ScheduleRow';
@@ -59,6 +60,7 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
 const ScheduleGrid = () => {
     const [data, setData] = useState<Map<string, (MlbGame | null)[]> | null>(null);
     const [days, setDays] = useState<string[]>([]);
+    const [todayIndex, setTodayIndex] = useState<number | null>(null);
 
     const getSchedule = async () => {
         try {
@@ -68,8 +70,14 @@ const ScheduleGrid = () => {
             setData(parseScheduleData(response.data));
 
             const daysArray: string[] = [];
-            response.data.forEach((day: MlbDay) => {
-                daysArray.push(day.date.slice(5)); // Omit the year so it's just formatted as mm-dd
+            setTodayIndex(null);
+            response.data.forEach((mlbDate: MlbDay, index: number) => {
+                const [year, month, day] = mlbDate.date.split('-');
+                const dateTime = DateTime.local(parseInt(year), parseInt(month), parseInt(day));
+                if (dateTime.hasSame(DateTime.local(), 'day')) {
+                    setTodayIndex(index);
+                }
+                daysArray.push(mlbDate.date.slice(5)); // Omit the year so it's just formatted as mm-dd
             });
             setDays(daysArray);
         } catch (e) {
@@ -93,6 +101,7 @@ const ScheduleGrid = () => {
                 key={teamName}
                 teamName={teamName}
                 games={games}
+                todayIndex={todayIndex}
             />
         ));
     });
