@@ -1,10 +1,19 @@
+table {
+  border-collapse: collapse;
+}
+
 th {
-  background-color: aqua;
+  background-color: lightgreen;
   border: 1px solid black;
 }
 
 td {
   border: 1px solid black;
+  padding: 5px;
+}
+
+tr:nth-child(even) {
+  background-color: #eee;
 }
 
 .odds {
