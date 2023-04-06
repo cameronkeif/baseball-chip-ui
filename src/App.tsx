@@ -1,11 +1,9 @@
-import React from 'react';
-import './App.css';
-import ScheduleGrid from './components/ScheduleGrid';
+import React from "react";
+import "./App.css";
+import ScheduleGrid from "./components/ScheduleGrid";
 
 function App() {
-  return (
-    <ScheduleGrid />
-  );
+  return <ScheduleGrid />;
 }
 
 export default App;
