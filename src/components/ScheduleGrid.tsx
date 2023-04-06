@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, ReactElement } from "react";
 import axios from "axios";
 import { DateTime } from "luxon";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import MlbDay from "../types/MlbDay";
 import MlbGame from "../types/MlbGame";
 import ScheduleRow from "./ScheduleRow";
@@ -64,12 +66,13 @@ function ScheduleGrid() {
   const [days, setDays] = useState<string[]>([]);
   const [todayIndex, setTodayIndex] = useState<number | null>(null);
   const [dateRange, setDateRange] = useState<string>("2023-03-30;2023-04-09"); // TODO initialize this to the current week.
+  const [includeOdds, setIncludeOdds] = useState<boolean>(false);
 
   const getSchedule = useCallback(async () => {
     try {
       // TODO fix this hard coded value
       const [startDate, endDate] = dateRange.split(";");
-      const url = `http://localhost:6060/schedule?startDate=${startDate}&endDate=${endDate}&includeOdds=false`;
+      const url = `http://localhost:6060/schedule?startDate=${startDate}&endDate=${endDate}&includeOdds=${includeOdds}`;
       const response = await axios.get(url);
       setData(parseScheduleData(response.data));
 
@@ -93,11 +96,11 @@ function ScheduleGrid() {
       alert("Something went wrong, check the console."); // eslint-disable-line
       console.error(e); // eslint-disable-line
     }
-  }, [dateRange]);
+  }, [dateRange, includeOdds]);
 
   useEffect(() => {
     getSchedule();
-  }, [dateRange, getSchedule]);
+  }, [includeOdds, dateRange, getSchedule]);
 
   if (!data) {
     return null;
@@ -118,7 +121,7 @@ function ScheduleGrid() {
   return (
     <div>
       <select
-        onChange={(event) => {
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
           setDateRange(event.target.value);
         }}
       >
@@ -148,6 +151,20 @@ function ScheduleGrid() {
         <option value="2023-09-11;2023-09-17">Week 24 (Sep 11 - Sep 17)</option>
         <option value="2023-09-18;2023-09-24">Week 25 (Sep 18 - Sep 24)</option>
       </select>
+      <div>
+        <FormControlLabel
+          label="Include game odds"
+          control={
+            <Checkbox
+              inputProps={{ "aria-label": "Include game odds" }}
+              checked={includeOdds}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setIncludeOdds(event.target.checked);
+              }}
+            />
+          }
+        />
+      </div>
       <table>
         <thead>
           <tr>
