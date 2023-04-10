@@ -44,6 +44,9 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
   let dayCount = 0;
   scheduleData.forEach((day) => {
     day.games.forEach((game) => {
+      if (game.status.detailedState === "Postponed") {
+        return;
+      }
       teamMap.get(game.teams.home.team.name)?.push(game);
       teamMap.get(game.teams.away.team.name)?.push(game);
     });
@@ -70,8 +73,8 @@ function ScheduleGrid() {
 
   const getSchedule = useCallback(async () => {
     try {
-      // TODO fix this hard coded value
       const [startDate, endDate] = dateRange.split(";");
+      // TODO fix this hard coded url
       const url = `http://localhost:6060/schedule?startDate=${startDate}&endDate=${endDate}&includeOdds=${includeOdds}`;
       const response = await axios.get(url);
       setData(parseScheduleData(response.data));
