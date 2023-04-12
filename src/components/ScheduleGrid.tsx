@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, ReactElement } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { DateTime } from "luxon";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
@@ -7,6 +7,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import CircularProgress from "@mui/material/CircularProgress";
+import { toast } from "react-toastify";
 import MlbDay from "../types/MlbDay";
 import MlbGame from "../types/MlbGame";
 import ScheduleRow from "./ScheduleRow";
@@ -84,9 +86,11 @@ function ScheduleGrid() {
     startingWeek || mlbWeeks[0]
   );
   const [includeOdds, setIncludeOdds] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getSchedule = useCallback(async () => {
     try {
+      setIsLoading(true);
       const [startDate, endDate] = dateRange.split(";");
       const url = `${process.env.REACT_APP_BASE_API_URL}/schedule?startDate=${startDate}&endDate=${endDate}&includeOdds=${includeOdds}`;
       const response = await axios.get(url);
@@ -103,9 +107,14 @@ function ScheduleGrid() {
       });
       setDays(daysArray);
     } catch (e) {
-      // TODO error handling
-      alert("Something went wrong, check the console."); // eslint-disable-line
-      console.error(e); // eslint-disable-line
+      if (e instanceof AxiosError) {
+        toast.error(
+          `An unexpected error occurred: ${e.response?.data.message}`
+        );
+      }
+      setData(null);
+    } finally {
+      setIsLoading(false);
     }
   }, [dateRange, includeOdds]);
 
@@ -113,27 +122,25 @@ function ScheduleGrid() {
     getSchedule();
   }, [includeOdds, dateRange, getSchedule]);
 
-  if (!data) {
-    return null;
-  }
-
   const scheduleRows: ReactElement[] = [];
-  data.forEach((games, teamName) => {
-    scheduleRows.push(
-      <ScheduleRow
-        key={teamName /* eslint-disable-line react/no-array-index-key */}
-        teamName={teamName}
-        games={games}
-        todayIndex={todayIndex}
-      />
-    );
-  });
+  if (data) {
+    data.forEach((games, teamName) => {
+      scheduleRows.push(
+        <ScheduleRow
+          key={teamName /* eslint-disable-line react/no-array-index-key */}
+          teamName={teamName}
+          games={games}
+          todayIndex={todayIndex}
+        />
+      );
+    });
+  }
 
   return (
     <>
       <h2>MLB Schedule</h2>
       <Box display="flex" justifyContent="center" alignItems="center">
-        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <FormControl variant="standard" sx={{ m: 1, mr: 3, minWidth: 120 }}>
           <Select
             labelId="schedule-grid-week-select-label"
             id="schedule-grid-week-select"
@@ -171,17 +178,20 @@ function ScheduleGrid() {
         />
       </Box>
       <Box display="flex" justifyContent="center">
-        <table>
-          <thead>
-            <tr>
-              <th />
-              {days.map((day) => (
-                <th key={day}>{day}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>{scheduleRows}</tbody>
-        </table>
+        {isLoading && <CircularProgress />}
+        {data && (
+          <table>
+            <thead>
+              <tr>
+                <th />
+                {days.map((day) => (
+                  <th key={day}>{day}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>{scheduleRows}</tbody>
+          </table>
+        )}
       </Box>
     </>
   );
