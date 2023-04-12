@@ -6,7 +6,7 @@ import { getDateTimeFromDateString } from "../utils/utils";
 
 interface ScheduleTableProps {
   scheduleData: Map<string, (MlbGame | null)[]>;
-  dateRange: string; // TODO could we pull this out of scheduleData instead?
+  dateRange: string;
 }
 
 function ScheduleTable({ scheduleData, dateRange }: ScheduleTableProps) {

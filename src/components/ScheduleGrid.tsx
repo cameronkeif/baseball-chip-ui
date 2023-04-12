@@ -14,6 +14,7 @@ import MlbGame from "../types/MlbGame";
 import ScheduleTable from "./ScheduleTable";
 import mlbWeeks from "../utils/mlbWeeks";
 import teamAbbreviations from "../utils/teamAbbreviations";
+import { getDateTimeFromDateString } from "../utils/utils";
 
 /**
  * Parses the schedule data returned from the API and returns a map of each team and its
@@ -51,22 +52,6 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
   });
 
   return teamMap;
-};
-
-/**
- * Takes a date string formatted as yyyy-mm-dd and returns a corresponding DateTime object.
- * @param dateString The date string formatted as yyyy-mm-dd
- * @returns A DateTime object matching this date.
- */
-const getDateTimeFromDateString = (dateString: string): DateTime => {
-  const [year, month, day] = dateString.split("-");
-  const dateTime = DateTime.local(
-    parseInt(year),
-    parseInt(month),
-    parseInt(day)
-  );
-
-  return dateTime;
 };
 
 function ScheduleGrid() {
