@@ -74,8 +74,7 @@ function ScheduleGrid() {
   const getSchedule = useCallback(async () => {
     try {
       const [startDate, endDate] = dateRange.split(";");
-      // TODO fix this hard coded url
-      const url = `http://localhost:6060/schedule?startDate=${startDate}&endDate=${endDate}&includeOdds=${includeOdds}`;
+      const url = `${process.env.BASE_API_URL}/schedule?startDate=${startDate}&endDate=${endDate}&includeOdds=${includeOdds}`;
       const response = await axios.get(url);
       setData(parseScheduleData(response.data));
 
