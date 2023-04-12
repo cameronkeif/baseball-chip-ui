@@ -1,3 +1,7 @@
+body {
+  padding: 10px;
+}
+
 table {
   border-collapse: collapse;
 }
@@ -26,4 +30,9 @@ tr:nth-child(even) {
 
 .schedule-today {
   font-weight: bold;
+}
+
+h2 {
+  text-align: center;
+  margin: 0;
 }
