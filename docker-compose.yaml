@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  baseball-chip-ui:
+    build:
+      .
+    ports:
+      - "3000:3000"
+  baseball-chip-schedule-service:
+    image:
+      baseball-chip-schedule-service
+    ports:
+      - "6060:6060"
+    env_file:
+      - .env
