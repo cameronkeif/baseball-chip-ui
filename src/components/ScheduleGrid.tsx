@@ -130,7 +130,7 @@ function ScheduleGrid() {
   });
 
   return (
-    <div>
+    <>
       <h2>MLB Schedule</h2>
       <Box display="flex" justifyContent="center" alignItems="center">
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -183,7 +183,7 @@ function ScheduleGrid() {
           <tbody>{scheduleRows}</tbody>
         </table>
       </Box>
-    </div>
+    </>
   );
 }
 
