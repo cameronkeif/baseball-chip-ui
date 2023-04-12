@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, ReactElement } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import { DateTime } from "luxon";
 import Box from "@mui/material/Box";
@@ -11,7 +11,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { toast } from "react-toastify";
 import MlbDay from "../types/MlbDay";
 import MlbGame from "../types/MlbGame";
-import ScheduleRow from "./ScheduleRow";
+import ScheduleTable from "./ScheduleTable";
 import mlbWeeks from "../utils/mlbWeeks";
 import teamAbbreviations from "../utils/teamAbbreviations";
 
@@ -80,11 +80,10 @@ function ScheduleGrid() {
       getDateTimeFromDateString(weekDateString.split(";")[1]).startOf("day")
   );
 
-  const [days, setDays] = useState<string[]>([]);
-  const [todayIndex, setTodayIndex] = useState<number | null>(null);
   const [dateRange, setDateRange] = useState<string>(
     startingWeek || mlbWeeks[0]
   );
+  const [activeDateRange, setActiveDateRange] = useState<string>(dateRange);
   const [includeOdds, setIncludeOdds] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -95,17 +94,7 @@ function ScheduleGrid() {
       const url = `${process.env.REACT_APP_BASE_API_URL}/schedule?startDate=${startDate}&endDate=${endDate}&includeOdds=${includeOdds}`;
       const response = await axios.get(url);
       setData(parseScheduleData(response.data));
-
-      const daysArray: string[] = [];
-      setTodayIndex(null);
-      response.data.forEach((mlbDate: MlbDay, index: number) => {
-        const dateTime = getDateTimeFromDateString(mlbDate.date);
-        if (dateTime.hasSame(DateTime.local(), "day")) {
-          setTodayIndex(index);
-        }
-        daysArray.push(mlbDate.date.slice(5)); // Omit the year so it's just formatted as mm-dd
-      });
-      setDays(daysArray);
+      setActiveDateRange(dateRange);
     } catch (e) {
       if (e instanceof AxiosError) {
         toast.error(
@@ -121,20 +110,6 @@ function ScheduleGrid() {
   useEffect(() => {
     getSchedule();
   }, [includeOdds, dateRange, getSchedule]);
-
-  const scheduleRows: ReactElement[] = [];
-  if (data) {
-    data.forEach((games, teamName) => {
-      scheduleRows.push(
-        <ScheduleRow
-          key={teamName /* eslint-disable-line react/no-array-index-key */}
-          teamName={teamName}
-          games={games}
-          todayIndex={todayIndex}
-        />
-      );
-    });
-  }
 
   return (
     <>
@@ -178,19 +153,11 @@ function ScheduleGrid() {
         />
       </Box>
       <Box display="flex" justifyContent="center">
-        {isLoading && <CircularProgress />}
+        {isLoading && <CircularProgress sx={{ m: 1, color: "green" }} />}
+      </Box>
+      <Box display="flex" justifyContent="center">
         {data && (
-          <table>
-            <thead>
-              <tr>
-                <th />
-                {days.map((day) => (
-                  <th key={day}>{day}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>{scheduleRows}</tbody>
-          </table>
+          <ScheduleTable scheduleData={data} dateRange={activeDateRange} />
         )}
       </Box>
     </>
