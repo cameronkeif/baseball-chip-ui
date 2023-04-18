@@ -24,7 +24,7 @@ import { getDateTimeFromDateString } from "../utils/utils";
  * representing that team's schedule
  */
 const parseScheduleData = (scheduleData: MlbDay[]) => {
-  const teamMap = new Map<string, (MlbGame | MlbGame[] | null)[]>();
+  const teamMap = new Map<string, (MlbGame | [MlbGame, MlbGame] | null)[]>();
 
   teamAbbreviations.forEach((teamAbbr, teamName) => {
     teamMap.set(teamName, []);
@@ -79,7 +79,7 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
 function ScheduleGrid() {
   const [data, setData] = useState<Map<
     string,
-    (MlbGame | MlbGame[] | null)[]
+    (MlbGame | [MlbGame, MlbGame] | null)[]
   > | null>(null);
 
   const startingWeek = mlbWeeks.find(

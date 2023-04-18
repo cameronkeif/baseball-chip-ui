@@ -5,7 +5,7 @@ import teamAbbreviations from "../utils/teamAbbreviations";
 
 interface ScheduleRowProps {
   teamName: string;
-  games: (MlbGame | MlbGame[] | null)[];
+  games: (MlbGame | [MlbGame, MlbGame] | null)[];
   todayIndex: number | null;
 }
 
