@@ -49,8 +49,8 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
           teamMap.get(game.teams.away.team.name)?.pop();
 
           if (existingGame && !Array.isArray(existingGame)) {
-            teamMap.get(game.teams.home.team.name)?.push([game, existingGame]);
-            teamMap.get(game.teams.away.team.name)?.push([game, existingGame]);
+            teamMap.get(game.teams.home.team.name)?.push([existingGame, game]);
+            teamMap.get(game.teams.away.team.name)?.push([existingGame, game]);
           }
           doubleHeaderFlag = false;
         } else {

@@ -31,7 +31,7 @@ function ScheduleRow({ teamName, games, todayIndex }: ScheduleRowProps) {
       );
     }
 
-    if (game.odds) {
+    if (game.odds && game.status.detailedState !== "Final") {
       const odds =
         game.odds[0].name === teamName
           ? game.odds[0].price
