@@ -5,7 +5,7 @@ import MlbGame from "../types/MlbGame";
 import { getDateTimeFromDateString } from "../utils/utils";
 
 interface ScheduleTableProps {
-  scheduleData: Map<string, (MlbGame | null)[]>;
+  scheduleData: Map<string, (MlbGame | MlbGame[] | null)[]>;
   dateRange: string;
 }
 

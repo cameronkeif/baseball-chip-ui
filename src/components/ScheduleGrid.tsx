@@ -24,7 +24,7 @@ import { getDateTimeFromDateString } from "../utils/utils";
  * representing that team's schedule
  */
 const parseScheduleData = (scheduleData: MlbDay[]) => {
-  const teamMap = new Map<string, (MlbGame | null)[]>();
+  const teamMap = new Map<string, (MlbGame | MlbGame[] | null)[]>();
 
   teamAbbreviations.forEach((teamAbbr, teamName) => {
     teamMap.set(teamName, []);
@@ -32,14 +32,36 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
 
   let dayCount = 0;
   scheduleData.forEach((day) => {
-    // For each day, if the game hasn't been postponed,
-    // insert the game into both the home and away team's schedule array
+    let doubleHeaderFlag = false;
     day.games.forEach((game) => {
+      // For each day, if the game hasn't been postponed,
+      // insert the game into both the home and away team's schedule array
       if (game.status.detailedState === "Postponed") {
         return;
       }
-      teamMap.get(game.teams.home.team.name)?.push(game);
-      teamMap.get(game.teams.away.team.name)?.push(game);
+
+      // Doubleheaders will be represented as an array of two games.
+      // We'll use the doubleHeaderFlag as an indicator to replace the
+      // game with an array.
+      if (game.doubleHeader === "Y") {
+        if (doubleHeaderFlag) {
+          const existingGame = teamMap.get(game.teams.home.team.name)?.pop();
+          teamMap.get(game.teams.away.team.name)?.pop();
+
+          if (existingGame && !Array.isArray(existingGame)) {
+            teamMap.get(game.teams.home.team.name)?.push([game, existingGame]);
+            teamMap.get(game.teams.away.team.name)?.push([game, existingGame]);
+          }
+          doubleHeaderFlag = false;
+        } else {
+          teamMap.get(game.teams.home.team.name)?.push(game);
+          teamMap.get(game.teams.away.team.name)?.push(game);
+          doubleHeaderFlag = true;
+        }
+      } else {
+        teamMap.get(game.teams.home.team.name)?.push(game);
+        teamMap.get(game.teams.away.team.name)?.push(game);
+      }
     });
 
     // Then for each team, if they didn't have a game on the current day, insert null
@@ -55,9 +77,10 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
 };
 
 function ScheduleGrid() {
-  const [data, setData] = useState<Map<string, (MlbGame | null)[]> | null>(
-    null
-  );
+  const [data, setData] = useState<Map<
+    string,
+    (MlbGame | MlbGame[] | null)[]
+  > | null>(null);
 
   const startingWeek = mlbWeeks.find(
     (weekDateString) =>
