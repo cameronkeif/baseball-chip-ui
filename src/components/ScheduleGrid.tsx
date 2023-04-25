@@ -106,7 +106,9 @@ function ScheduleGrid() {
     } catch (e) {
       if (e instanceof AxiosError) {
         toast.error(
-          `An unexpected error occurred: ${e.response?.data.message}`
+          `An unexpected error occurred${
+            e.response?.data.message ? `: ${e.response?.data.message}` : "."
+          }`
         );
       }
       setData(null);
