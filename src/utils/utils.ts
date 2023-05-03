@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 
 /**
  * Takes a date string formatted as yyyy-mm-dd and returns a corresponding DateTime object.
@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
  * @returns A DateTime object matching this date.
  */
 export const getDateTimeFromDateString = (dateString: string): DateTime => {
-  const [year, month, day] = dateString.split("-");
+  const [year, month, day] = dateString.split('-');
   const dateTime = DateTime.local(
     parseInt(year),
     parseInt(month),

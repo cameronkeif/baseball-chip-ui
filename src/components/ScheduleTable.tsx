@@ -1,8 +1,8 @@
-import React, { ReactElement } from "react";
-import { DateTime, Interval } from "luxon";
-import ScheduleRow from "./ScheduleRow";
-import MlbGame from "../types/MlbGame";
-import { getDateTimeFromDateString } from "../utils/utils";
+import React, { ReactElement } from 'react';
+import { DateTime, Interval } from 'luxon';
+import ScheduleRow from './ScheduleRow';
+import MlbGame from '../types/MlbGame';
+import { getDateTimeFromDateString } from '../utils/utils';
 
 interface ScheduleTableProps {
   scheduleData: Map<string, (MlbGame | [MlbGame, MlbGame] | null)[]>;
@@ -10,17 +10,17 @@ interface ScheduleTableProps {
 }
 
 function ScheduleTable({ scheduleData, dateRange }: ScheduleTableProps) {
-  const [startDate, endDate] = dateRange.split(";");
+  const [startDate, endDate] = dateRange.split(';');
   const days = Interval.fromDateTimes(
-    getDateTimeFromDateString(startDate).startOf("day"),
-    getDateTimeFromDateString(endDate).endOf("day")
+    getDateTimeFromDateString(startDate).startOf('day'),
+    getDateTimeFromDateString(endDate).endOf('day')
   )
     .splitBy({ day: 1 })
-    .map((d) => d.start?.toFormat("ccc L-d"));
+    .map((d) => d.start?.toFormat('ccc L-d'));
 
   const todayIndex = days.findIndex((day) => {
     const dateTime = getDateTimeFromDateString(`2023-${day}`);
-    return dateTime.hasSame(DateTime.local(), "day");
+    return dateTime.hasSame(DateTime.local(), 'day');
   });
 
   const scheduleRows: ReactElement[] = [];

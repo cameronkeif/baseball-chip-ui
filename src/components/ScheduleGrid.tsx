@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
-import axios, { AxiosError } from "axios";
-import { DateTime } from "luxon";
-import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import CircularProgress from "@mui/material/CircularProgress";
-import { toast } from "react-toastify";
-import MlbDay from "../types/MlbDay";
-import MlbGame from "../types/MlbGame";
-import ScheduleTable from "./ScheduleTable";
-import mlbWeeks from "../utils/mlbWeeks";
-import teamAbbreviations from "../utils/teamAbbreviations";
-import { getDateTimeFromDateString } from "../utils/utils";
+import React, { useState, useEffect, useCallback } from 'react';
+import axios, { AxiosError } from 'axios';
+import { DateTime } from 'luxon';
+import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import CircularProgress from '@mui/material/CircularProgress';
+import { toast } from 'react-toastify';
+import MlbDay from '../types/MlbDay';
+import MlbGame from '../types/MlbGame';
+import ScheduleTable from './ScheduleTable';
+import mlbWeeks from '../utils/mlbWeeks';
+import teamAbbreviations from '../utils/teamAbbreviations';
+import { getDateTimeFromDateString } from '../utils/utils';
 
 /**
  * Parses the schedule data returned from the API and returns a map of each team and its
@@ -36,14 +36,14 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
     day.games.forEach((game) => {
       // For each day, if the game hasn't been postponed,
       // insert the game into both the home and away team's schedule array
-      if (game.status.detailedState === "Postponed") {
+      if (game.status.detailedState === 'Postponed') {
         return;
       }
 
       // Doubleheaders will be represented as an array of two games.
       // We'll use the doubleHeaderFlag as an indicator to replace the
       // game with an array.
-      if (game.doubleHeader === "Y") {
+      if (game.doubleHeader === 'Y') {
         if (doubleHeaderFlag) {
           const existingGame = teamMap.get(game.teams.home.team.name)?.pop();
           teamMap.get(game.teams.away.team.name)?.pop();
@@ -84,8 +84,8 @@ function ScheduleGrid() {
 
   const startingWeek = mlbWeeks.find(
     (weekDateString) =>
-      DateTime.now().startOf("day") <=
-      getDateTimeFromDateString(weekDateString.split(";")[1]).startOf("day")
+      DateTime.now().startOf('day') <=
+      getDateTimeFromDateString(weekDateString.split(';')[1]).startOf('day')
   );
 
   const [dateRange, setDateRange] = useState<string>(
@@ -98,7 +98,7 @@ function ScheduleGrid() {
   const getSchedule = useCallback(async () => {
     try {
       setIsLoading(true);
-      const [startDate, endDate] = dateRange.split(";");
+      const [startDate, endDate] = dateRange.split(';');
       const url = `${process.env.REACT_APP_BASE_API_URL}/schedule?startDate=${startDate}&endDate=${endDate}&includeOdds=${includeOdds}`;
       const response = await axios.get(url);
       setData(parseScheduleData(response.data));
@@ -107,7 +107,7 @@ function ScheduleGrid() {
       if (e instanceof AxiosError) {
         toast.error(
           `An unexpected error occurred${
-            e.response?.data.message ? `: ${e.response?.data.message}` : "."
+            e.response?.data.message ? `: ${e.response?.data.message}` : '.'
           }`
         );
       }
@@ -135,8 +135,8 @@ function ScheduleGrid() {
             }}
           >
             {mlbWeeks.map((weekDateString, i) => {
-              const [startDate, endDate] = weekDateString.split(";");
-              const format = "LLL dd";
+              const [startDate, endDate] = weekDateString.split(';');
+              const format = 'LLL dd';
               const startFormatted =
                 getDateTimeFromDateString(startDate).toFormat(format);
               const endFormatted =
@@ -153,7 +153,7 @@ function ScheduleGrid() {
           label="Include game odds"
           control={
             <Checkbox
-              inputProps={{ "aria-label": "Include game odds" }}
+              inputProps={{ 'aria-label': 'Include game odds' }}
               checked={includeOdds}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setIncludeOdds(event.target.checked);
@@ -163,7 +163,7 @@ function ScheduleGrid() {
         />
       </Box>
       <Box display="flex" justifyContent="center">
-        {isLoading && <CircularProgress sx={{ m: 1, color: "green" }} />}
+        {isLoading && <CircularProgress sx={{ m: 1, color: 'green' }} />}
       </Box>
       <Box display="flex" justifyContent="center">
         {data && (

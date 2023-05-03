@@ -1,4 +1,4 @@
-import { MlbApiTeam } from "./MlbApiTeam";
+import { MlbApiTeam } from './MlbApiTeam';
 
 export type MlbApiGame = {
   officialDate: string;

@@ -1,7 +1,7 @@
-import React from "react";
-import classNames from "classnames";
-import MlbGame from "../types/MlbGame";
-import teamAbbreviations from "../utils/teamAbbreviations";
+import React from 'react';
+import classNames from 'classnames';
+import MlbGame from '../types/MlbGame';
+import teamAbbreviations from '../utils/teamAbbreviations';
 
 interface ScheduleRowProps {
   teamName: string;
@@ -10,7 +10,7 @@ interface ScheduleRowProps {
 }
 
 function ScheduleRow({ teamName, games, todayIndex }: ScheduleRowProps) {
-  const buildGameContent = (game: MlbGame, appendToKey: string = "") => {
+  const buildGameContent = (game: MlbGame, appendToKey: string = '') => {
     const isHome = game.teams.home.team.name === teamName;
     const team = isHome ? game.teams.home : game.teams.away;
     const opponent = isHome
@@ -19,19 +19,19 @@ function ScheduleRow({ teamName, games, todayIndex }: ScheduleRowProps) {
 
     const content = [
       <div key={`${game.gameDate}-opponent${appendToKey}`}>{`${
-        isHome ? "" : "@"
+        isHome ? '' : '@'
       }${teamAbbreviations.get(opponent)}`}</div>,
     ];
 
     if (team.probablePitcher) {
       content.push(
         <div key={`${game.gameDate}-pitcher${appendToKey}`}>
-          {team.probablePitcher.fullName.split(" ").at(-1)}
+          {team.probablePitcher.fullName.split(' ').at(-1)}
         </div>
       );
     }
 
-    if (game.odds && game.status.detailedState !== "Final") {
+    if (game.odds && game.status.detailedState !== 'Final') {
       const odds =
         game.odds[0].name === teamName
           ? game.odds[0].price
@@ -39,7 +39,7 @@ function ScheduleRow({ teamName, games, todayIndex }: ScheduleRowProps) {
 
       content.push(
         <div
-          className={classNames("odds", { favored: parseInt(odds) < 0 })}
+          className={classNames('odds', { favored: parseInt(odds) < 0 })}
           key={`${game.gameDate}-odds${appendToKey}`}
         >
           {odds}
@@ -66,7 +66,7 @@ function ScheduleRow({ teamName, games, todayIndex }: ScheduleRowProps) {
         if (Array.isArray(game)) {
           content = buildGameContent(game[0]);
           content.push(<hr key={`${game[0].gameDate}-hr`} />);
-          content = content.concat(buildGameContent(game[1], "2"));
+          content = content.concat(buildGameContent(game[1], '2'));
         } else {
           content = buildGameContent(game);
         }
@@ -74,7 +74,7 @@ function ScheduleRow({ teamName, games, todayIndex }: ScheduleRowProps) {
         return (
           <td
             key={`${Array.isArray(game) ? game[0].gameDate : game.gameDate}`}
-            className={classNames({ "schedule-today": index === todayIndex })}
+            className={classNames({ 'schedule-today': index === todayIndex })}
           >
             {content}
           </td>
