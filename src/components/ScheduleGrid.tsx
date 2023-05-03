@@ -43,7 +43,7 @@ const parseScheduleData = (scheduleData: MlbDay[]) => {
       // Doubleheaders will be represented as an array of two games.
       // We'll use the doubleHeaderFlag as an indicator to replace the
       // game with an array.
-      if (game.doubleHeader === 'Y') {
+      if (game.doubleHeader === 'Y' || game.doubleHeader === 'S') {
         if (doubleHeaderFlag) {
           const existingGame = teamMap.get(game.teams.home.team.name)?.pop();
           teamMap.get(game.teams.away.team.name)?.pop();
