@@ -6,6 +6,6 @@ COPY ./src ./src
 COPY ./public ./public
 COPY ./tsconfig.json ./
 COPY package*.json ./
-RUN npm i
+RUN npm ci
 
 CMD ["npm", "start"]

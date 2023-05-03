@@ -16,7 +16,7 @@ function ScheduleTable({ scheduleData, dateRange }: ScheduleTableProps) {
     getDateTimeFromDateString(endDate).endOf("day")
   )
     .splitBy({ day: 1 })
-    .map((d) => d.start?.toFormat("LL-dd"));
+    .map((d) => d.start?.toFormat("ccc L-d"));
 
   const todayIndex = days.findIndex((day) => {
     const dateTime = getDateTimeFromDateString(`2023-${day}`);

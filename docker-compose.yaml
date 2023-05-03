@@ -5,6 +5,8 @@ services:
       .
     ports:
       - "3001:3000"
+    env_file:
+      - .env
   baseball-chip-schedule-service:
     image:
       baseball-chip-schedule-service
